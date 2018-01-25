@@ -864,7 +864,7 @@ void AggregationElement::processAggVarJoinNewForArray(DDS& aggDDS, const libdap:
     BESDEBUG("ncml",
         "Adding new ArrayAggregateOnOuterDimension with name=" << arrayTemplate.name() << " to aggregated dataset!" << endl);
 
-    aggDDS.add_var(pAggArray.get());
+    aggDDS.add_var_nocopy(pAggArray.get());
 }
 
 void AggregationElement::processAggVarJoinNewForGrid(DDS& aggDDS, const Grid& gridTemplate,
@@ -880,7 +880,7 @@ void AggregationElement::processAggVarJoinNewForGrid(DDS& aggDDS, const Grid& gr
     // OPTIMIZE change to add_var_no_copy when it exists.
     BESDEBUG("ncml",
         "Adding new GridAggregateOnOuterDimension with name=" << gridTemplate.name() << " to aggregated dataset!" << endl);
-    aggDDS.add_var(pAggGrid.get());
+    aggDDS.add_var_nocopy(pAggGrid.get());
 
     // processParentDatasetCompleteForJoinNew() will
     // make sure the correct new map vector gets added
@@ -909,7 +909,7 @@ void AggregationElement::processAggVarJoinExistingForArray(DDS& aggDDS, const li
     BESDEBUG("ncml",
         "Adding new ArrayJoinExistingAggregation with name=" << arrayTemplate.name() << " to aggregated dataset!" << endl);
 
-    aggDDS.add_var(pAggArray.get());
+    aggDDS.add_var_nocopy(pAggArray.get());
 }
 
 void AggregationElement::processAggVarJoinExistingForGrid(DDS& aggDDS, const Grid& gridTemplate,
@@ -924,7 +924,7 @@ void AggregationElement::processAggVarJoinExistingForGrid(DDS& aggDDS, const Gri
 
     BESDEBUG("ncml",
         "Adding new GridJoinExistingAggregation with name=" << gridTemplate.name() << " to aggregated dataset!" << endl);
-    aggDDS.add_var(pAggGrid.get()); // will copy
+    aggDDS.add_var_nocopy(pAggGrid.get()); // will copy
 }
 
 void AggregationElement::processParentDatasetCompleteForJoinNew()
@@ -1229,7 +1229,7 @@ AggregationElement::processDeferredCoordinateVariable(libdap::BaseType* pBT, con
     // Add the new one, which will copy it (argh! we need to fix this in libdap!)
     // OPTIMIZE  use non copy add when available.
     BESDEBUG("ncml", "Adding CV: " << pNewArrCV->name() << endl);
-    pDDS->add_var(pNewArrCV.get()); // use raw ptr for the copy.
+    pDDS->add_var_nocopy(pNewArrCV.get()); // use raw ptr for the copy.
 
     // Pull out the copy we just added and hand it back
     Array* pArrCV = static_cast<Array*>(AggregationUtil::getVariableNoRecurse(*pDDS, dim.name));
@@ -1268,7 +1268,7 @@ AggregationElement::createAndAddCoordinateVariableForNewDimension(DDS& dds, cons
     // recognize them. jhrg 10/17/11
     BESDEBUG("ncml2", "AggregationElement::createAndAddCoordinateVariableForNewDimension: " << pNewCV->name());
 #if 0
-    dds.add_var(pNewCV.get());
+    dds.add_var_nocopy(pNewCV.get());
 #else
     // This provides a way to remember where the last CV was inserted and adds
     // this one after it. That provides the behavior that all of the CVs are
